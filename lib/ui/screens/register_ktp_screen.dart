@@ -44,7 +44,7 @@ class _RegisterKtpState extends State<RegisterKtp> {
           AuthRegister(
             widget.data.copyWith(
                 ktp: image == null
-                    ? null
+                    ? ''
                     : 'data:image/png;base64,${base64Encode(
                         File(image!.path).readAsBytesSync(),
                       )}'),

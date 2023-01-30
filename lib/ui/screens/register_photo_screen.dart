@@ -46,7 +46,7 @@ class _RegisterPhotoScreenState extends State<RegisterPhotoScreen> {
           data: widget.data.copyWith(
             pin: pinController.text,
             profilePicture: image == null
-                ? null
+                ? ''
                 : 'data:image/png;base64,${base64Encode(
                     File(image!.path).readAsBytesSync(),
                   )}',

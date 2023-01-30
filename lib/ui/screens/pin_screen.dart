@@ -1,7 +1,9 @@
+import 'package:bank_sha/blocs/auth/auth_bloc.dart';
 import 'package:bank_sha/ui/widgets/buttons.dart';
 import 'package:bank_sha/utils/constant.dart';
 import 'package:bank_sha/utils/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PinScreen extends StatefulWidget {
   const PinScreen({Key? key}) : super(key: key);
@@ -12,6 +14,8 @@ class PinScreen extends StatefulWidget {
 
 class _PinScreenState extends State<PinScreen> {
   final TextEditingController controller = TextEditingController(text: '');
+  String pin = '';
+  bool isError = false;
 
   _addPin(String text) {
     if (controller.text.length < 6) {
@@ -20,10 +24,13 @@ class _PinScreenState extends State<PinScreen> {
       });
     }
 
-    if (controller.text == '123456') {
+    if (controller.text == pin) {
       Navigator.pop(context, true);
-    } else if (controller.text.length == 6 && controller.text != '123456') {
+    } else if (controller.text.length == 6 && controller.text != pin) {
       showSnackbar(context, 'Pin is not valid!');
+      setState(() {
+        isError = true;
+      });
     }
   }
 
@@ -33,8 +40,21 @@ class _PinScreenState extends State<PinScreen> {
         List<String> updatedText = controller.text.split('');
         updatedText.removeLast();
         controller.text = updatedText.join();
+        setState(() {
+          isError = false;
+        });
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final authState = context.read<AuthBloc>().state;
+
+    if (authState is AuthSuccess) {
+      pin = authState.user.pin!;
+    }
   }
 
   @override
@@ -62,6 +82,7 @@ class _PinScreenState extends State<PinScreen> {
                   fontSize: 36,
                   fontWeight: fontWeightMedium,
                   letterSpacing: 16,
+                  color: isError ? redColor : whiteColor,
                 ),
                 cursorColor: greyColor,
                 decoration: InputDecoration(
