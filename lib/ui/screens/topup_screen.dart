@@ -1,7 +1,11 @@
+import 'package:bank_sha/blocs/auth/auth_bloc.dart';
+import 'package:bank_sha/blocs/payment_method/payment_method_bloc.dart';
+import 'package:bank_sha/models/payment_method_model.dart';
 import 'package:bank_sha/ui/widgets/buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:bank_sha/ui/widgets/topup_item.dart';
 import 'package:bank_sha/utils/theme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TopupScreen extends StatefulWidget {
   const TopupScreen({Key? key}) : super(key: key);
@@ -11,7 +15,7 @@ class TopupScreen extends StatefulWidget {
 }
 
 class _TopupScreenState extends State<TopupScreen> {
-  String id = '';
+  PaymentMethodModel? activePaymentMethod;
 
   @override
   Widget build(BuildContext context) {
@@ -28,34 +32,43 @@ class _TopupScreenState extends State<TopupScreen> {
             ),
           ),
           const SizedBox(height: 10),
-          Row(
-            children: [
-              Image.asset(
-                'assets/images/cardSmall.png',
-                width: 80,
-                height: 55,
-              ),
-              const SizedBox(width: 15),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '1234 5678 9012',
-                    style: blackTextStyle.copyWith(
-                      fontWeight: fontWeightMedium,
-                      fontSize: 16,
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              if (state is AuthSuccess) {
+                return Row(
+                  children: [
+                    Image.asset(
+                      'assets/images/cardSmall.png',
+                      width: 80,
+                      height: 55,
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'Abdur Rahim',
-                    style: greyTextStyle.copyWith(
-                      fontSize: 12,
+                    const SizedBox(width: 15),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          state.user.cardNumber.toString().replaceAllMapped(
+                              RegExp(r".{4}"), (match) => "${match.group(0)} "),
+                          style: blackTextStyle.copyWith(
+                            fontWeight: fontWeightMedium,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          state.user.name.toString(),
+                          style: greyTextStyle.copyWith(
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                );
+              }
+
+              return Container();
+            },
           ),
           const SizedBox(height: 40),
           Text(
@@ -66,39 +79,46 @@ class _TopupScreenState extends State<TopupScreen> {
             ),
           ),
           const SizedBox(height: 14),
-          TopupItem(
-            image: 'assets/images/bankBca.png',
-            title: 'Bank BCA',
-            time: '50 mins',
-            onPressed: () => setState(() => id = '1'),
-            active: id == '1',
+          BlocProvider(
+            create: (context) => PaymentMethodBloc()..add(GetPaymentMethod()),
+            child: BlocBuilder<PaymentMethodBloc, PaymentMethodState>(
+              builder: (context, state) {
+                if (state is PaymentMethodSuccess) {
+                  return Column(
+                    children: [
+                      ...state.paymentMethods.map(
+                        (paymentMethod) => TopupItem(
+                          paymentMethod: paymentMethod,
+                          onPressed: () {
+                            setState(() {
+                              activePaymentMethod = paymentMethod;
+                            });
+                          },
+                          active: paymentMethod.id == activePaymentMethod?.id,
+                        ),
+                      ),
+                      activePaymentMethod?.id != null
+                          ? Column(
+                              children: [
+                                const SizedBox(height: 10),
+                                Button(
+                                  title: 'Continue',
+                                  onPressed: () => Navigator.pushNamed(
+                                      context, '/top-up-amount'),
+                                )
+                              ],
+                            )
+                          : Container(),
+                    ],
+                  );
+                }
+
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            ),
           ),
-          TopupItem(
-            image: 'assets/images/bankBni.png',
-            title: 'Bank BNI',
-            time: '50 mins',
-            onPressed: () => setState(() => id = '2'),
-            active: id == '2',
-          ),
-          TopupItem(
-            image: 'assets/images/bankMandiri.png',
-            title: 'Bank Mandiri',
-            time: '50 mins',
-            onPressed: () => setState(() => id = '3'),
-            active: id == '3',
-          ),
-          TopupItem(
-            image: 'assets/images/bankOcbc.png',
-            title: 'Bank OCBC',
-            time: '50 mins',
-            onPressed: () => setState(() => id = '4'),
-            active: id == '4',
-          ),
-          const SizedBox(height: 10),
-          Button(
-            title: 'Continue',
-            onPressed: () => Navigator.pushNamed(context, '/top-up-amount'),
-          )
         ],
       ),
     );

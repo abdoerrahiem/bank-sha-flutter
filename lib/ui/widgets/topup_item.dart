@@ -1,18 +1,15 @@
+import 'package:bank_sha/models/payment_method_model.dart';
 import 'package:bank_sha/utils/theme.dart';
 import 'package:flutter/material.dart';
 
 class TopupItem extends StatelessWidget {
-  final String image;
-  final String title;
-  final String time;
+  final PaymentMethodModel paymentMethod;
   final bool? active;
   final VoidCallback? onPressed;
 
   const TopupItem({
     Key? key,
-    required this.image,
-    required this.title,
-    required this.time,
+    required this.paymentMethod,
     this.active = false,
     this.onPressed,
   }) : super(key: key);
@@ -34,8 +31,8 @@ class TopupItem extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Image.asset(
-              image,
+            Image.network(
+              paymentMethod.thumbnail.toString(),
               height: 30,
             ),
             const Spacer(),
@@ -43,14 +40,14 @@ class TopupItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  title,
+                  paymentMethod.name.toString(),
                   style: blackTextStyle.copyWith(
                     fontSize: 16,
                     fontWeight: fontWeightMedium,
                   ),
                 ),
                 Text(
-                  time,
+                  '50 mins',
                   style: greyTextStyle.copyWith(
                     fontSize: 12,
                   ),
