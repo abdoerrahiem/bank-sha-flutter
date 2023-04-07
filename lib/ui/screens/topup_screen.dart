@@ -1,6 +1,8 @@
 import 'package:bank_sha/blocs/auth/auth_bloc.dart';
 import 'package:bank_sha/blocs/payment_method/payment_method_bloc.dart';
 import 'package:bank_sha/models/payment_method_model.dart';
+import 'package:bank_sha/models/topup_form_model.dart';
+import 'package:bank_sha/ui/screens/topup_amount_screen.dart';
 import 'package:bank_sha/ui/widgets/buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:bank_sha/ui/widgets/topup_item.dart';
@@ -103,8 +105,19 @@ class _TopupScreenState extends State<TopupScreen> {
                                 const SizedBox(height: 10),
                                 Button(
                                   title: 'Continue',
-                                  onPressed: () => Navigator.pushNamed(
-                                      context, '/top-up-amount'),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => TopupAmountScreen(
+                                          data: TopupFormModel(
+                                            paymentMethodCode:
+                                                activePaymentMethod?.code,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 )
                               ],
                             )

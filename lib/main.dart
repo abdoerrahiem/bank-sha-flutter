@@ -17,7 +17,7 @@ import 'package:bank_sha/ui/screens/register_screen.dart';
 // import 'package:bank_sha/ui/screens/register_photo_screen.dart';
 import 'package:bank_sha/ui/screens/register_success_screen.dart';
 import 'package:bank_sha/ui/screens/splash_screen.dart';
-import 'package:bank_sha/ui/screens/topup_amount_screen.dart';
+// import 'package:bank_sha/ui/screens/topup_amount_screen.dart';
 import 'package:bank_sha/ui/screens/topup_screen.dart';
 import 'package:bank_sha/ui/screens/topup_success_screen.dart';
 import 'package:bank_sha/ui/screens/transfer_amount_screen.dart';
@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
           '/profile-edit-success': (context) =>
               const ProfileEditSuccessScreen(),
           '/top-up': (context) => const TopupScreen(),
-          '/top-up-amount': (context) => const TopupAmountScreen(),
+          // '/top-up-amount': (context) => const TopupAmountScreen(),
           '/top-up-success': (context) => const TopupSuccessScreen(),
           '/transfer': (context) => const TransferScreen(),
           '/transfer-amount': (context) => const TransferAmountScreen(),
