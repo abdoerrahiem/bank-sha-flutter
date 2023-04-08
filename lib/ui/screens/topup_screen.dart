@@ -99,29 +99,6 @@ class _TopupScreenState extends State<TopupScreen> {
                           active: paymentMethod.id == activePaymentMethod?.id,
                         ),
                       ),
-                      activePaymentMethod?.id != null
-                          ? Column(
-                              children: [
-                                const SizedBox(height: 10),
-                                Button(
-                                  title: 'Continue',
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => TopupAmountScreen(
-                                          data: TopupFormModel(
-                                            paymentMethodCode:
-                                                activePaymentMethod?.code,
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                )
-                              ],
-                            )
-                          : Container(),
                     ],
                   );
                 }
@@ -134,6 +111,27 @@ class _TopupScreenState extends State<TopupScreen> {
           ),
         ],
       ),
+      floatingActionButton: activePaymentMethod?.id != null
+          ? Container(
+              margin: const EdgeInsets.all(15),
+              child: Button(
+                title: 'Continue',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TopupAmountScreen(
+                        data: TopupFormModel(
+                          paymentMethodCode: activePaymentMethod?.code,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )
+          : Container(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

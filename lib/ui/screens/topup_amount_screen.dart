@@ -52,10 +52,6 @@ class _TopupAmountScreenState extends State<TopupAmountScreen> {
     });
   }
 
-  // _handleCheckoutNow(BuildContext context) async {
-  //   if (await Navigator.pushNamed(context, '/pin') == true) {}
-  // }
-
   @override
   Widget build(BuildContext context) {
     // print(inputText);
@@ -74,6 +70,12 @@ class _TopupAmountScreenState extends State<TopupAmountScreen> {
               await launchUrl(Uri.parse(state.redirectUrl));
 
               if (!mounted) return;
+
+              context.read<AuthBloc>().add(
+                    AuthUpdateBalance(
+                      int.parse(inputText),
+                    ),
+                  );
 
               Navigator.pushNamedAndRemoveUntil(
                 context,
