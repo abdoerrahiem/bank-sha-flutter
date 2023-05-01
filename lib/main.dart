@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bank_sha/blocs/auth/auth_bloc.dart';
+import 'package:bank_sha/blocs/user/user_bloc.dart';
 import 'package:bank_sha/ui/screens/data_package_screen.dart';
 import 'package:bank_sha/ui/screens/data_provider_screen.dart';
 import 'package:bank_sha/ui/screens/data_provider_success_screen.dart';
@@ -20,7 +21,7 @@ import 'package:bank_sha/ui/screens/splash_screen.dart';
 // import 'package:bank_sha/ui/screens/topup_amount_screen.dart';
 import 'package:bank_sha/ui/screens/topup_screen.dart';
 import 'package:bank_sha/ui/screens/topup_success_screen.dart';
-import 'package:bank_sha/ui/screens/transfer_amount_screen.dart';
+// import 'package:bank_sha/ui/screens/transfer_amount_screen.dart';
 import 'package:bank_sha/ui/screens/transfer_screen.dart';
 import 'package:bank_sha/ui/screens/transfer_success_screen.dart';
 import 'package:bank_sha/utils/constant.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
             create: (context) => AuthBloc()..add(AuthGetCurrentUser())),
+        BlocProvider(create: (context) => UserBloc()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -78,7 +80,7 @@ class MyApp extends StatelessWidget {
           // '/top-up-amount': (context) => const TopupAmountScreen(),
           '/top-up-success': (context) => const TopupSuccessScreen(),
           '/transfer': (context) => const TransferScreen(),
-          '/transfer-amount': (context) => const TransferAmountScreen(),
+          // '/transfer-amount': (context) => const TransferAmountScreen(),
           '/transfer-success': (context) => const TransferSuccessScreen(),
           '/data-provider': (context) => const DataProviderScreen(),
           '/data-package': (context) => const DataPackageScreen(),

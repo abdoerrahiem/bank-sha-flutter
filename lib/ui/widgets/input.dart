@@ -8,6 +8,7 @@ class Input extends StatelessWidget {
   final String placeholder;
   final TextEditingController? controller;
   final TextInputType textInputType;
+  final Function(String)? onFieldSubmitted;
 
   const Input({
     Key? key,
@@ -16,6 +17,7 @@ class Input extends StatelessWidget {
     this.placeholder = '',
     this.controller,
     this.textInputType = TextInputType.text,
+    this.onFieldSubmitted,
   }) : super(key: key);
 
   @override
@@ -51,6 +53,7 @@ class Input extends StatelessWidget {
             ),
             contentPadding: const EdgeInsets.all(14),
           ),
+          onFieldSubmitted: onFieldSubmitted,
         ),
       ],
     );

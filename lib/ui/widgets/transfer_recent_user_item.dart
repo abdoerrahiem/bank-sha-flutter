@@ -1,20 +1,15 @@
+import 'package:bank_sha/models/user_model.dart';
 import 'package:bank_sha/utils/theme.dart';
 import 'package:flutter/material.dart';
 
 class TransferRecentUserItem extends StatelessWidget {
-  final String image;
-  final String name;
-  final String username;
-  final bool isVerified;
+  final UserModel user;
   final bool isActive;
   final VoidCallback? onPressed;
 
   const TransferRecentUserItem({
     Key? key,
-    required this.image,
-    required this.name,
-    required this.username,
-    this.isVerified = false,
+    required this.user,
     this.isActive = false,
     this.onPressed,
   }) : super(key: key);
@@ -43,7 +38,9 @@ class TransferRecentUserItem extends StatelessWidget {
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(image),
+                  image: NetworkImage(user.profilePicture == null
+                      ? 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'
+                      : user.profilePicture.toString()),
                 ),
               ),
             ),
@@ -53,7 +50,7 @@ class TransferRecentUserItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
+                    user.name.toString(),
                     style: blackTextStyle.copyWith(
                       fontWeight: fontWeightMedium,
                       fontSize: 16,
@@ -61,7 +58,7 @@ class TransferRecentUserItem extends StatelessWidget {
                     maxLines: 1,
                   ),
                   Text(
-                    '@$username',
+                    '@${user.username}',
                     style: greyTextStyle.copyWith(
                       fontSize: 12,
                     ),
@@ -70,7 +67,7 @@ class TransferRecentUserItem extends StatelessWidget {
                 ],
               ),
             ),
-            if (isVerified == true)
+            if (user.verified == 1)
               Row(
                 children: [
                   Container(
