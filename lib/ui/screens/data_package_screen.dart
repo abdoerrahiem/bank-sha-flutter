@@ -1,11 +1,19 @@
+import 'package:bank_sha/models/data_plan_model.dart';
+import 'package:bank_sha/models/operator_card_model.dart';
 import 'package:bank_sha/ui/widgets/buttons.dart';
 import 'package:bank_sha/ui/widgets/input.dart';
 import 'package:bank_sha/ui/widgets/package_item.dart';
+import 'package:bank_sha/utils/constant.dart';
 import 'package:bank_sha/utils/theme.dart';
 import 'package:flutter/material.dart';
 
 class DataPackageScreen extends StatefulWidget {
-  const DataPackageScreen({Key? key}) : super(key: key);
+  final OperatorCardModel operatorCard;
+
+  const DataPackageScreen({
+    Key? key,
+    required this.operatorCard,
+  }) : super(key: key);
 
   @override
   State<DataPackageScreen> createState() => _DataPackageScreenState();
@@ -13,7 +21,8 @@ class DataPackageScreen extends StatefulWidget {
 
 class _DataPackageScreenState extends State<DataPackageScreen> {
   final TextEditingController phoneController = TextEditingController(text: '');
-  String id = '';
+  DataPlanModel? selectedDataPlan;
+  String phone = '';
 
   _handleContinue() async {
     if (await Navigator.pushNamed(context, '/pin') == true) {
@@ -22,9 +31,13 @@ class _DataPackageScreenState extends State<DataPackageScreen> {
     }
   }
 
-  _handlePress(String currentId) {
+  _handlePress(DataPlanModel item) {
     setState(() {
-      id = currentId;
+      if (item.id == selectedDataPlan?.id) {
+        selectedDataPlan = null;
+      } else {
+        selectedDataPlan = item;
+      }
     });
   }
 
@@ -48,12 +61,20 @@ class _DataPackageScreenState extends State<DataPackageScreen> {
               Input(
                 controller: phoneController,
                 placeholder: '+628',
+                onChangeText: (String value) {
+                  setState(() {
+                    phone = value;
+                  });
+                },
               ),
-              buildResult(context, id, _handlePress),
+              widget.operatorCard.dataPlans == null
+                  ? Container()
+                  : buildResult(context, widget.operatorCard.dataPlans!,
+                      selectedDataPlan, _handlePress),
               const SizedBox(height: 50),
             ],
           ),
-          if (id.isNotEmpty)
+          if (selectedDataPlan != null && phone.isNotEmpty)
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -73,7 +94,8 @@ class _DataPackageScreenState extends State<DataPackageScreen> {
   }
 }
 
-Widget buildResult(BuildContext context, String id, handlePress) {
+Widget buildResult(BuildContext context, List<DataPlanModel> dataPlans,
+    DataPlanModel? selectedDataPlan, handlePress) {
   return Container(
     margin: const EdgeInsets.only(top: 40),
     child: Column(
@@ -92,44 +114,15 @@ Widget buildResult(BuildContext context, String id, handlePress) {
           child: Wrap(
             runSpacing: 15,
             spacing: 15,
-            children: [
-              PackageItem(
-                name: '10 GB',
-                price: 'Rp. 100.000',
-                isActive: id == '1',
-                onPressed: () => handlePress('1'),
-              ),
-              PackageItem(
-                name: '20 GB',
-                price: 'Rp. 200.000',
-                isActive: id == '2',
-                onPressed: () => handlePress('2'),
-              ),
-              PackageItem(
-                name: '30 GB',
-                price: 'Rp. 300.000',
-                isActive: id == '3',
-                onPressed: () => handlePress('3'),
-              ),
-              PackageItem(
-                name: '40 GB',
-                price: 'Rp. 400.000',
-                isActive: id == '4',
-                onPressed: () => handlePress('4'),
-              ),
-              PackageItem(
-                name: '50 GB',
-                price: 'Rp. 500.000',
-                isActive: id == '5',
-                onPressed: () => handlePress('5'),
-              ),
-              PackageItem(
-                name: '60 GB',
-                price: 'Rp. 600.000',
-                isActive: id == '6',
-                onPressed: () => handlePress('6'),
-              ),
-            ],
+            children: dataPlans
+                .map((plan) => PackageItem(
+                      name: plan.name.toString(),
+                      price:
+                          formatRupiah(number: plan.price!, showComplete: true),
+                      isActive: selectedDataPlan?.id == plan.id,
+                      onPressed: () => handlePress(plan),
+                    ))
+                .toList(),
           ),
         ),
       ],

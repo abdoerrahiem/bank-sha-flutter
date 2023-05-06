@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bank_sha/ui/widgets/home_more_item.dart';
 import 'package:bank_sha/utils/theme.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,7 @@ class HomeMoreDialog extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       content: Container(
         width: MediaQuery.of(context).size.width,
-        height: 340,
+        height: 350,
         padding: const EdgeInsets.all(30),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(40),
@@ -37,8 +39,13 @@ class HomeMoreDialog extends StatelessWidget {
                 HomeMoreItem(
                   image: 'assets/images/data.png',
                   title: 'Data',
-                  onPressed: () =>
-                      Navigator.pushNamed(context, '/data-provider'),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/data-provider');
+                    // Navigator.of(context, rootNavigator: true).pop();
+                    // Timer(const Duration(seconds: 2), () {
+                    //   Navigator.of(context, rootNavigator: true).pop();
+                    // });
+                  },
                 ),
                 const HomeMoreItem(
                   image: 'assets/images/water.png',

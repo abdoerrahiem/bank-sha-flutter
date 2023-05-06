@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:bank_sha/blocs/auth/auth_bloc.dart';
 import 'package:bank_sha/blocs/user/user_bloc.dart';
-import 'package:bank_sha/ui/screens/data_package_screen.dart';
+// import 'package:bank_sha/ui/screens/data_package_screen.dart';
 import 'package:bank_sha/ui/screens/data_provider_screen.dart';
 import 'package:bank_sha/ui/screens/data_provider_success_screen.dart';
 import 'package:bank_sha/ui/screens/home_screen.dart';
@@ -83,7 +83,7 @@ class MyApp extends StatelessWidget {
           // '/transfer-amount': (context) => const TransferAmountScreen(),
           '/transfer-success': (context) => const TransferSuccessScreen(),
           '/data-provider': (context) => const DataProviderScreen(),
-          '/data-package': (context) => const DataPackageScreen(),
+          // '/data-package': (context) => const DataPackageScreen(),
           '/data-provider-success': (context) =>
               const DataProviderSuccessScreen(),
         },

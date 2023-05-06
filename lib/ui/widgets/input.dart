@@ -9,16 +9,18 @@ class Input extends StatelessWidget {
   final TextEditingController? controller;
   final TextInputType textInputType;
   final Function(String)? onFieldSubmitted;
+  final Function(String)? onChangeText;
 
-  const Input({
-    Key? key,
-    this.title = '',
-    this.isPassword = false,
-    this.placeholder = '',
-    this.controller,
-    this.textInputType = TextInputType.text,
-    this.onFieldSubmitted,
-  }) : super(key: key);
+  const Input(
+      {Key? key,
+      this.title = '',
+      this.isPassword = false,
+      this.placeholder = '',
+      this.controller,
+      this.textInputType = TextInputType.text,
+      this.onFieldSubmitted,
+      this.onChangeText})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,9 @@ class Input extends StatelessWidget {
           style: blackTextStyle.copyWith(
             fontSize: 14,
           ),
+          onChanged: (value) => {
+            if (onChangeText != null) {onChangeText!(value)}
+          },
           decoration: InputDecoration(
             hintText: placeholder,
             border: OutlineInputBorder(
