@@ -1,3 +1,6 @@
+import 'package:bank_sha/blocs/auth/auth_bloc.dart';
+import 'package:bank_sha/blocs/data_plan/data_plan_bloc.dart';
+import 'package:bank_sha/models/data_plan_form_model.dart';
 import 'package:bank_sha/models/data_plan_model.dart';
 import 'package:bank_sha/models/operator_card_model.dart';
 import 'package:bank_sha/ui/widgets/buttons.dart';
@@ -6,6 +9,7 @@ import 'package:bank_sha/ui/widgets/package_item.dart';
 import 'package:bank_sha/utils/constant.dart';
 import 'package:bank_sha/utils/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DataPackageScreen extends StatefulWidget {
   final OperatorCardModel operatorCard;
@@ -24,10 +28,23 @@ class _DataPackageScreenState extends State<DataPackageScreen> {
   DataPlanModel? selectedDataPlan;
   String phone = '';
 
-  _handleContinue() async {
+  _handleContinue(BuildContext context) async {
     if (await Navigator.pushNamed(context, '/pin') == true) {
-      Navigator.pushNamedAndRemoveUntil(
-          context, '/data-provider-success', (route) => false);
+      final authState = context.read<AuthBloc>().state;
+      String pin = '';
+      if (authState is AuthSuccess) {
+        pin = authState.user.pin!;
+      }
+
+      context.read<DataPlanBloc>().add(
+            DataPlanPost(
+              DataPlanFormModel(
+                dataPlanId: selectedDataPlan?.id,
+                phoneNumber: phoneController.text,
+                pin: pin,
+              ),
+            ),
+          );
     }
   }
 
@@ -45,50 +62,74 @@ class _DataPackageScreenState extends State<DataPackageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: defaultAppbar('Paket Data', context),
-      body: Stack(
-        children: [
-          ListView(
-            padding: const EdgeInsets.all(25),
-            children: [
-              Text(
-                'Phone Number',
-                style: blackTextStyle.copyWith(
-                  fontWeight: fontWeightSemiBold,
-                  fontSize: 16,
+      body: BlocProvider(
+        create: (context) => DataPlanBloc(),
+        child: BlocConsumer<DataPlanBloc, DataPlanState>(
+          listener: (context, state) {
+            if (state is DataPlanFailed) {
+              showSnackbar(context, state.e);
+            }
+
+            if (state is DataPlanSuccess) {
+              context.read<AuthBloc>().add(
+                    AuthUpdateBalance(
+                      selectedDataPlan!.price! * -1,
+                    ),
+                  );
+
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/data-provider-success', (route) => false);
+            }
+          },
+          builder: (context, state) {
+            return Stack(
+              children: [
+                ListView(
+                  padding: const EdgeInsets.all(25),
+                  children: [
+                    Text(
+                      'Phone Number',
+                      style: blackTextStyle.copyWith(
+                        fontWeight: fontWeightSemiBold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    Input(
+                      controller: phoneController,
+                      placeholder: '+628',
+                      onChangeText: (String value) {
+                        setState(() {
+                          phone = value;
+                        });
+                      },
+                    ),
+                    widget.operatorCard.dataPlans == null
+                        ? Container()
+                        : buildResult(context, widget.operatorCard.dataPlans!,
+                            selectedDataPlan, _handlePress),
+                    const SizedBox(height: 50),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 14),
-              Input(
-                controller: phoneController,
-                placeholder: '+628',
-                onChangeText: (String value) {
-                  setState(() {
-                    phone = value;
-                  });
-                },
-              ),
-              widget.operatorCard.dataPlans == null
-                  ? Container()
-                  : buildResult(context, widget.operatorCard.dataPlans!,
-                      selectedDataPlan, _handlePress),
-              const SizedBox(height: 50),
-            ],
-          ),
-          if (selectedDataPlan != null && phone.isNotEmpty)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 15,
-                ),
-                child: Button(
-                  title: 'Continue',
-                  onPressed: _handleContinue,
-                ),
-              ),
-            ),
-        ],
+                if (selectedDataPlan != null && phone.isNotEmpty)
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 15,
+                      ),
+                      child: Button(
+                        title: 'Continue',
+                        onPressed: () => _handleContinue(context),
+                        loading: state is DataPlanLoading,
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
