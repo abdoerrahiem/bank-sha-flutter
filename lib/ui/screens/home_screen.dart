@@ -1,4 +1,5 @@
 import 'package:bank_sha/blocs/auth/auth_bloc.dart';
+import 'package:bank_sha/blocs/transaction/transaction_bloc.dart';
 import 'package:bank_sha/ui/widgets/home_more_dialog.dart';
 import 'package:bank_sha/ui/widgets/latest_transaction_item.dart';
 import 'package:bank_sha/ui/widgets/service_item.dart';
@@ -395,39 +396,26 @@ Widget buildLatestTransactions() {
             color: whiteColor,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Column(
-            children: const [
-              LatestTransactionItem(
-                icon: 'assets/images/topupTransaction.png',
-                title: 'Top Up',
-                date: 'Yesterday',
-                price: '+ 450.000',
-              ),
-              LatestTransactionItem(
-                icon: 'assets/images/cashbackTransaction.png',
-                title: 'Cashback',
-                date: 'Sep 11',
-                price: '+ 22.000',
-              ),
-              LatestTransactionItem(
-                icon: 'assets/images/withdrawTransaction.png',
-                title: 'Withdraw',
-                date: 'Sep 2',
-                price: '- 5.000',
-              ),
-              LatestTransactionItem(
-                icon: 'assets/images/transferTransaction.png',
-                title: 'Transfer',
-                date: 'Aug 27',
-                price: '- 123.500',
-              ),
-              LatestTransactionItem(
-                icon: 'assets/images/electricTransaction.png',
-                title: 'Electric',
-                date: 'Feb 18',
-                price: '- 12.300.000',
-              ),
-            ],
+          child: BlocProvider(
+            create: (context) => TransactionBloc()..add(TransactionGet()),
+            child: BlocBuilder<TransactionBloc, TransactionState>(
+              builder: (context, state) {
+                if (state is TransactionSuccess) {
+                  return Column(
+                    children: state.transactions
+                        .map(
+                          (transaction) =>
+                              LatestTransactionItem(transaction: transaction),
+                        )
+                        .toList(),
+                  );
+                }
+
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            ),
           ),
         ),
       ],
