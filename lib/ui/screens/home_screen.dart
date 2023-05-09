@@ -1,5 +1,7 @@
 import 'package:bank_sha/blocs/auth/auth_bloc.dart';
+import 'package:bank_sha/blocs/tip/tip_bloc.dart';
 import 'package:bank_sha/blocs/transaction/transaction_bloc.dart';
+import 'package:bank_sha/blocs/user/user_bloc.dart';
 import 'package:bank_sha/ui/widgets/home_more_dialog.dart';
 import 'package:bank_sha/ui/widgets/latest_transaction_item.dart';
 import 'package:bank_sha/ui/widgets/service_item.dart';
@@ -9,7 +11,6 @@ import 'package:bank_sha/utils/constant.dart';
 import 'package:bank_sha/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -437,27 +438,25 @@ Widget buildSendAgain() {
           ),
         ),
         const SizedBox(height: 14),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: const [
-              UserItem(
-                image: 'assets/images/profile.png',
-                name: 'abdoerrahiem',
-              ),
-              UserItem(
-                image: 'assets/images/profile.png',
-                name: 'abdoerrahiem',
-              ),
-              UserItem(
-                image: 'assets/images/profile.png',
-                name: 'abdoerrahiem',
-              ),
-              UserItem(
-                image: 'assets/images/profile.png',
-                name: 'abdoerrahiem',
-              ),
-            ],
+        BlocProvider(
+          create: (context) => UserBloc()..add(UserGetRecent()),
+          child: BlocBuilder<UserBloc, UserState>(
+            builder: (context, state) {
+              if (state is UserSuccess) {
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: state.users
+                        .map((user) => UserItem(user: user))
+                        .toList(),
+                  ),
+                );
+              }
+
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
           ),
         ),
       ],
@@ -479,40 +478,24 @@ Widget buildFriendlyTips() {
           ),
         ),
         const SizedBox(height: 14),
-        Wrap(
-          spacing: 17,
-          runSpacing: 18,
-          children: const [
-            TipItem(
-              image:
-                  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8',
-              title:
-                  'Best tips for using a credit card Best tips for using a credit card',
-              url: 'https://google.com',
-            ),
-            TipItem(
-              image:
-                  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8',
-              title:
-                  'Best tips for using a credit card Best tips for using a credit card',
-              url: 'https://google.com',
-            ),
-            TipItem(
-              image:
-                  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8',
-              title:
-                  'Best tips for using a credit card Best tips for using a credit card',
-              url: 'https://google.com',
-            ),
-            TipItem(
-              image:
-                  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8',
-              title:
-                  'Best tips for using a credit card Best tips for using a credit card',
-              url: 'https://google.com',
-            ),
-          ],
-        )
+        BlocProvider(
+          create: (context) => TipBloc()..add(TipEventGet()),
+          child: BlocBuilder<TipBloc, TipState>(
+            builder: (context, state) {
+              if (state is TipSuccess) {
+                return Wrap(
+                  spacing: 17,
+                  runSpacing: 18,
+                  children: state.tips.map((tip) => TipItem(tip: tip)).toList(),
+                );
+              }
+
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          ),
+        ),
       ],
     ),
   );
