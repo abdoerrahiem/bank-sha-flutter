@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:bank_sha/models/operator_card_model.dart';
-import 'package:bank_sha/models/user_model.dart';
 import 'package:bank_sha/services/auth_service.dart';
 import 'package:bank_sha/utils/constant.dart';
 import 'package:http/http.dart' as http;
