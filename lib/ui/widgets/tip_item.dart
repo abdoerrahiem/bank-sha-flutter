@@ -15,9 +15,10 @@ class TipItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        if (await canLaunchUrl(Uri.parse(tip.url!))) {
-          launchUrl(Uri.parse(tip.url!));
-        }
+        launchUrl(Uri.parse(tip.url!));
+        // if (await canLaunchUrl(Uri.parse(tip.url!))) {
+        //   launchUrl(Uri.parse(tip.url!));
+        // }
       },
       child: Container(
         // height: MediaQuery.of(context).size.width / 2,

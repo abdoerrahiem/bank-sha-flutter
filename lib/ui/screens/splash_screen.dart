@@ -22,17 +22,18 @@ class SplashScreen extends StatelessWidget {
                 context, '/onboarding', (route) => false);
           }
         },
-        child: Center(
-          child: Container(
-            width: 155,
-            height: 50,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/logoWhite.png'),
-              ),
-            ),
-          ),
-        ),
+        child: Container(),
+        // child: Center(
+        //   child: Container(
+        //     width: 155,
+        //     height: 50,
+        //     decoration: const BoxDecoration(
+        //       image: DecorationImage(
+        //         image: AssetImage('assets/images/logoWhite.png'),
+        //       ),
+        //     ),
+        //   ),
+        // ),
       ),
     );
   }
