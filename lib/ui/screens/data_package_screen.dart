@@ -30,6 +30,8 @@ class _DataPackageScreenState extends State<DataPackageScreen> {
 
   _handleContinue(BuildContext context) async {
     if (await Navigator.pushNamed(context, '/pin') == true) {
+      if (!mounted) return;
+
       final authState = context.read<AuthBloc>().state;
       String pin = '';
       if (authState is AuthSuccess) {

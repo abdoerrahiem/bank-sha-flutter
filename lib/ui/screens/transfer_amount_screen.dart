@@ -57,6 +57,7 @@ class _TransferAmountScreenState extends State<TransferAmountScreen> {
     }
 
     if (await Navigator.pushNamed(context, '/pin') == true) {
+      if (!mounted) return;
       final authState = context.read<AuthBloc>().state;
       String pin = '';
       if (authState is AuthSuccess) {

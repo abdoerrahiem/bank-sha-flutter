@@ -58,5 +58,7 @@
 		<string>This app requires access to the microphone</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
-	</dict>
+		<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+</dict>
 </plist>
